@@ -1,0 +1,1 @@
+"use strict";var HelloWorld=require("@silurian/helloworld"),cfg=require("./cfg");HelloWorld.start(cfg);
