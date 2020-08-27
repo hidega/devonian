@@ -10,3 +10,5 @@ RUN dnf install -y wget && \
     chown -cR middleware /opt/prg/i1986hw/ > /dev/null 2>&1
 
 CMD su -s /bin/bash -c "/opt/prg/nodejs/bin/node /opt/prg/i1986hw/package/index.js start" middleware 
+
+EXPOSE 54111
