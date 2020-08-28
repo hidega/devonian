@@ -3,18 +3,33 @@
 const path = require('path')
 const commons = require('@permian/commons')
 
-function StorageLimitSetter(revert, cfg) {
+function StorageLimitSetter(revert, deploymentPlan) {
   const self = this
 
-  const defaultCfg = {
+  let originalCfg
+
+  const defaultDeploymentPlan = {
     cfgFile: path.resolve('/etc/containers/storage.conf')
   }
 
-  cfg = Object.assign(defaultCfg, commons.lang.isObject(revert) ? revert : cfg)
+  deploymentPlan = Object.assign(defaultDeploymentPlan, deploymentPlan)
 
-  self.apply = () => Promise.resolve(self)
+  self.apply = () => {
+    let result = self
+    if (deploymentPlan.limit) {
+      result = commons.lang.files.fsExtra.readFile(deploymentPlan.cfgFile)
+        .then(buf => {
+          originalCfg = buf.toString()
+          let cfg = buf.toString().split('\n').reduce((acc, l) => l.trim().startsWith('size') ? acc : acc + l + '\n', '')
+          cfg += '\nsize=' + deploymentPlan.limit
+          return commons.lang.files.fsExtra.writeFile(deploymentPlan.cfgFile, cfg)
+        })
+        .then(() => self)
+    }
+    return result
+  }
 
-  self.revert = () => revert()
+  self.revert = () => commons.lang.files.fsExtra.writeFile(deploymentPlan.cfgFile, originalCfg).then(revert)
 }
 
 module.exports = Object.freeze({ createInstance: (revert, cfg) => new StorageLimitSetter(revert, cfg) })
