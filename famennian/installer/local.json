@@ -1,0 +1,9 @@
+{
+  "sftp": {
+    "remoteDir": "public/public_html/npm",
+    "host": "pandora.inf.elte.hu",
+    "port": 22,
+    "user": "hiaiaat",
+    "password": "Andras73"
+  }
+}
