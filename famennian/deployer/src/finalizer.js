@@ -5,17 +5,17 @@ const Mixins = require('./mixins')
 function Finalizer(revert, deploymentPlan) {
   const self = this
 
-  const textIncludesAll = (text, arr) => !arr.find(e => !text.inculdes(e))
+  const textIncludesAll = (text, arr) => !arr.find(e => !text.includes(e))
 
   self.apply = () => self.spawnProcess('podman', ['container', 'ls', '-a'])
     .then(result => {
       const containerNames = deploymentPlan.containers.map(c => c.name)
-      return textIncludesAll('' + result.output.info + result.output.error, containerNames) ? Promise.resolve() : Promise.reject()
+      return textIncludesAll('' + result.output.info + result.output.error, containerNames) ? Promise.resolve(self) : Promise.reject(self)
     })
 
-  self.revert = () => revert()
+  self.revert = err => revert(err)
 
   Mixins.call(self)
 }
 
-module.exports = Object.freeze({ createInstance: (revert, cfg) => new Finalizer(revert, cfg) })
+module.exports = Finalizer

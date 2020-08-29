@@ -41,7 +41,7 @@ function StarterScriptCreator(revert, deploymentPlan) {
     .catch(() => {})
     .then(() => fs.writeFile(scriptFilePath, createScriptFile(deploymentPlan)))
 
-  self.revert = () => originalFile ? fs.writeFile(scriptFilePath, originalFile).then(revert) : revert()
+  self.revert = err => originalFile ? fs.writeFile(scriptFilePath, originalFile).then(() => revert(err)) : revert(err)
 }
 
-module.exports = Object.freeze({ createInstance: (revert, cfg) => new StarterScriptCreator(revert, cfg) })
+module.exports = StarterScriptCreator

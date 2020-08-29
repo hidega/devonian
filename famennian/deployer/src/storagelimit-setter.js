@@ -18,12 +18,12 @@ function StorageLimitSetter(revert, deploymentPlan) {
 
   self.apply = () => {
     let result = self
-    if (deploymentPlan.limit) {
+    if (deploymentPlan.storageLimit.limit) {
       result = fs.readFile(deploymentPlan.storageLimit.cfgFile)
         .then(buf => {
           originalCfg = buf.toString()
           let cfg = buf.toString().split('\n').reduce((acc, l) => l.trim().startsWith('size') ? acc : acc + l + '\n', '')
-          cfg += '\nsize="' + deploymentPlan.limit + '"'
+          cfg += 'size="' + deploymentPlan.storageLimit.limit + '"'
           return fs.writeFile(deploymentPlan.storageLimit.cfgFile, cfg)
         })
         .then(() => self)
@@ -31,7 +31,7 @@ function StorageLimitSetter(revert, deploymentPlan) {
     return result
   }
 
-  self.revert = () => fs.writeFile(deploymentPlan.storageLimit.cfgFile, originalCfg).then(revert)
+  self.revert = err => deploymentPlan.storageLimit.limit ? fs.writeFile(deploymentPlan.storageLimit.cfgFile, originalCfg).then(() => revert(err)) : revert(err)
 }
 
-module.exports = Object.freeze({ createInstance: (revert, cfg) => new StorageLimitSetter(revert, cfg) })
+module.exports = StorageLimitSetter

@@ -7,7 +7,7 @@ module.exports = () => {
   const mixins = new Mixins()
   let result
   if (commons.platform.isLinux()) {
-    result = mixins.spawnProcess('podman')
+    result = mixins.spawnProcess('podman', [], true)
   } else {
     result = Promise.reject()
   }
