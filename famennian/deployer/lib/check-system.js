@@ -1,0 +1,1 @@
+"use strict";var commons=require("@permian/commons"),Mixins=require("./mixins");module.exports=function(){var n=new Mixins,r=commons.platform.isLinux()?n.spawnProcess("podman"):n.reject();return r};

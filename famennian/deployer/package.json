@@ -1,7 +1,7 @@
 {
-  "name": "@famennian/installer",
+  "name": "@famennian/deployer",
   "version": "1.0.1",
-  "description": "Container installer script",
+  "description": "Container deployer script",
   "main": "index.js",
   "private": true,
   "devDependencies": {

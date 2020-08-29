@@ -1,3 +1,0 @@
-## installer
-
-COntainer installer script

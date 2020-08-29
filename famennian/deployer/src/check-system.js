@@ -1,13 +1,13 @@
 'use strict'
 
 const commons = require('@permian/commons')
-const Action = require('./action')
+const Mixins = require('./mixins')
 
 module.exports = () => {
-  const action = new Action()
+  const mixins = new Mixins()
   let result
   if (commons.platform.isLinux()) {
-    result = action.spawnProcess('node', ['-v']).then(() => action.spawnProcess('podman'))
+    result = mixins.spawnProcess('podman')
   } else {
     result = Promise.reject()
   }
