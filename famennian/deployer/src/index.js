@@ -23,7 +23,7 @@ checkSystem()
   .then(() => commons.files.fsExtra.readJson(deploymentPlanFile))
   .catch(() => commons.proc.terminateProcess('Deployment plan was not found: ' + deploymentPlanFile))
   .then(deploymentPlan => {
-    console.log('Deployment plan was found')
+    console.log('Host system checked\nDeployment plan was found')
     storageLimitSetter = new StorageLimitSetter(exit, deploymentPlan)
     starterscriptCreator = new StarterscriptCreator(storageLimitSetter.revert, deploymentPlan)
     containerDeployer = new ContainerDeployer(starterscriptCreator.revert, deploymentPlan)

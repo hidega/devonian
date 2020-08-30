@@ -4,6 +4,7 @@ const path = require('path')
 const commons = require('@permian/commons')
 const fs = commons.files.fsExtra
 const createInitdScript = require('./initd-script')
+const Mixins = require('./mixins')
 
 let originalFile = false
 
@@ -40,8 +41,11 @@ function StarterScriptCreator(revert, deploymentPlan) {
     .then(data => originalFile = data)
     .catch(() => {})
     .then(() => fs.writeFile(scriptFilePath, createScriptFile(deploymentPlan)))
+    .then(() => self.spawnProcess('bash', ['-c', `chmod -c 777 ${scriptFilePath}`] ))
 
   self.revert = err => originalFile ? fs.writeFile(scriptFilePath, originalFile).then(() => revert(err)) : revert(err)
+
+  Mixins.call(self)
 }
 
 module.exports = StarterScriptCreator
