@@ -13,7 +13,7 @@ function ContainerDeployer(revert, deploymentPlan) {
     .then(() => self.spawnProcess('podman', ['container', 'rm', '-af'], true))
 
   const createRunCmd = (acc, container) => {
-    let cmd = 'podman run --detach=true --privileged=true '
+    let cmd = 'podman run --detach=true --privileged=true --restart=no '
     cmd += ` --name=${container.name}`
     cmd += container.publish ? ` --publish=${container.publish.onHost}:${container.publish.onContainer}` : ''
     cmd += container.cpus ? ` --cpus=${container.cpus}` : ''

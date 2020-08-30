@@ -4,6 +4,10 @@
   },
   "shortDescription": "Short description",
   "starterScript": {},
+  "manager": {
+    "unhealthyActionFile": "action_if_unhealthy",
+    "healthcheckPeriodMins": 2
+  },
   "containers": [
     {
       "image": "docker.io/hidand/i1986hw:1",

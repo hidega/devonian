@@ -6,6 +6,7 @@ const commons = require('@permian/commons')
 const fs = commons.files.fsExtra
 const StorageLimitSetter = require('../src/storagelimit-setter')
 const ContainerDeployer = require('../src/container-deployer')
+const ContainerManager = require('../src/container-manager')
 const StarterscriptCreator = require('../src/starterscript-creator') 
 const Finalizer = require('../src/finalizer')
 
@@ -14,6 +15,7 @@ const deploymentPlan = fs.readJsonSync(path.resolve(__dirname, 'deployment-plan.
 const caseStoragelimit = () => { 
   const cfgFile = path.resolve(__dirname, 'storage.conf')
   deploymentPlan.storageLimit.cfgFile = cfgFile
+  deploymentPlan.configDir = __dirname
 
   const cfg = `
 # storage.conf is the configuration file for all tools
@@ -48,7 +50,7 @@ override_kernel_check = "true"
 
   return fs.remove(cfgFile)
   .then(() => fs.writeFile(cfgFile, cfg))
-  .then(() => StorageLimitSetter.createInstance(assert.fail, deploymentPlan).apply())
+  .then(() => new StorageLimitSetter(assert.fail, deploymentPlan).apply())
   .then(() => console.log('StorageLimitSetter done'))
 }
 
@@ -57,8 +59,8 @@ const caseStartscript = () => {
     dir: __dirname,
     scriptFile: 'devonian-starter.sh'
   }
-  return StarterscriptCreator.createInstance(assert.fail, deploymentPlan).apply()
-  .then(() => console.log('StarterscriptCreator done'))
+  return new StarterscriptCreator(assert.fail, deploymentPlan).apply()
+  .then(() => console.log('starterscriptCreator done'))
 }
 
 const caseContainerDeployer = () => {
@@ -70,8 +72,17 @@ const caseContainerDeployer = () => {
   return containerDeployer.apply().then(() => console.log('containerDeployer done'))
 }
 
+const caseContainerManager = () => {
+  deploymentPlan.manager = {
+    crontabFile: path.resolve(__dirname, 'crontab')
+  }
+  const containerManager = new ContainerManager(assert.fail, deploymentPlan)
+  return containerManager.apply().then(() => console.log('containerManager done'))
+}
+
 caseStoragelimit()
-.then(() => caseStartscript())
+//.then(() => caseStartscript())
 .then(() => caseContainerDeployer())
+.then(() => caseContainerManager())
 .then(() => console.log('OK'))
 .catch(console.error)

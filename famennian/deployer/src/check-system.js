@@ -9,6 +9,9 @@ module.exports = () => {
   if (commons.platform.isLinux()) {
     result = mixins.spawnProcess('podman', ['-v'])
       .then(() => mixins.spawnProcess('bash', ['--version']))
+      .then(() => mixins.spawnProcess('cat', ['/etc/crontab']))
+      .then(() => mixins.spawnProcess('touch', ['--version']))
+      .then(() => mixins.spawnProcess('mkdir', ['--version']))
       .then(() => mixins.spawnProcess('chmod', ['--version']))
   } else {
     result = Promise.reject()
