@@ -35,7 +35,7 @@ function ContainerManager(revert, deploymentPlan) {
     .then(() => fs.readFile(deploymentPlan.manager.crontabFile))
     .then(data => {
       const arr = data.toString().split('\n').filter(l => !l.trim.startsWith('#') && !l.includes(healthCheckScriptFile))
-      arr.push(`${deploymentPlan.manager.healthcheckPeriodMins.toString().padStart(2, '0')} * * * * root ${healthCheckScriptFile} > /dev/null 2>&1\n`)
+      arr.push(`*/${deploymentPlan.manager.healthcheckPeriodMins.toString()} * * * * root ${healthCheckScriptFile} > /dev/null 2>&1\n`)
       return arr.join('\n').replace(/\n{2,}/g, '\n')
     })
     .then(data => fs.writeFile(deploymentPlan.manager.crontabFile, data))
