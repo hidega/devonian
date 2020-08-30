@@ -2,8 +2,8 @@
 
 const containerSection = container => `
 HEALTH=$(podman healthcheck run ${container.name})
-[[ "$HEALTH" != "healthy" ]] && [[ "$ACTION" == "STOP" ]] && podman container stop ${container.name}
-[[ "$HEALTH" != "healthy" ]] && [[ "$ACTION" == "RESTART" ]] && podman container restart ${container.name}
+[ "$HEALTH" != "healthy" ] && [ "$ACTION" = "STOP" ] && podman container stop ${container.name}
+[ "$HEALTH" != "healthy" ] && [ "$ACTION" = "RESTART" ] && podman container restart ${container.name}
 
 `
 
