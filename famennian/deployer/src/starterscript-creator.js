@@ -41,7 +41,7 @@ function StarterScriptCreator(revert, deploymentPlan) {
     .then(data => originalFile = data)
     .catch(() => {})
     .then(() => fs.writeFile(scriptFilePath, createScriptFile(deploymentPlan)))
-    .then(() => self.spawnProcess('bash', ['-c', `chmod -c 777 ${scriptFilePath}`] ))
+    .then(() => self.spawnProcess('bash', ['-c', `chmod -c 777 ${scriptFilePath}`]))
 
   self.revert = err => originalFile ? fs.writeFile(scriptFilePath, originalFile).then(() => revert(err)) : revert(err)
 

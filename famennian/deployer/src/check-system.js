@@ -8,8 +8,8 @@ module.exports = () => {
   let result
   if (commons.platform.isLinux()) {
     result = mixins.spawnProcess('podman', ['-v'])
-    .then(() => mixins.spawnProcess('bash', ['--version']))
-    .then(() => mixins.spawnProcess('chmod', ['--version']))
+      .then(() => mixins.spawnProcess('bash', ['--version']))
+      .then(() => mixins.spawnProcess('chmod', ['--version']))
   } else {
     result = Promise.reject()
   }

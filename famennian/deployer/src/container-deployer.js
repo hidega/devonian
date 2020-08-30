@@ -29,7 +29,7 @@ function ContainerDeployer(revert, deploymentPlan) {
 
   self.apply = () => removeAllContainers()
     .then(() => sleep(delayMs))
-    .then(() => { 
+    .then(() => {
       const runCmd = deploymentPlan.containers.reduce(createRunCmd, '')
       return self.spawnProcess('bash', ['-c', `${runCmd + ' echo'}`]).then(() => sleep(delayMs)).then(() => self)
     })
