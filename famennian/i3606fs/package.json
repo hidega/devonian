@@ -1,12 +1,9 @@
 {
-  "name": "@famennian/i1986hw",
+  "name": "@famennian/i3606fs",
   "version": "1.0.1",
   "description": "Hello world HTTP service on proxmox",
   "main": "index.js",
   "private": true,
-  "devDependencies": {
-    "@permian/build-tasks": "https://people.inf.elte.hu/hiaiaat/npm/permian-build-tasks-1.0.4.tgz"
-  },
   "scripts": {
     "tr": "node -e \"require('@permian/build-tasks').taskrunner()\""
   },
