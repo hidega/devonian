@@ -12,7 +12,7 @@ function ContainerManager(revert, deploymentPlan) {
   const defaultDeploymentPlan = {
     manager: {
       unhealthyActionFile: 'action_if_unhealthy',
-      healthcheckPeriodMins: 2,
+      healthcheckPeriodMins: "*/02",
       crontabFile: '/etc/crontab'
     }
   }
@@ -34,8 +34,9 @@ function ContainerManager(revert, deploymentPlan) {
     .then(() => self.spawnProcess('chmod', ['-c', '755', healthCheckScriptFile]))
     .then(() => fs.readFile(deploymentPlan.manager.crontabFile))
     .then(data => {
-      const arr = data.toString().split('\n').filter(l => !l.trim.startsWith('#') && !l.includes(healthCheckScriptFile))
-      arr.push(`*/${deploymentPlan.manager.healthcheckPeriodMins.toString()} * * * * root ${healthCheckScriptFile} > /dev/null 2>&1\n`)
+      originalCrontab = data
+      const arr = data.toString().split('\n').filter(l => !l.trim().startsWith('#') && !l.includes(healthCheckScriptFile))
+      arr.push(`${deploymentPlan.manager.healthcheckPeriodMins.toString()} * * * * root ${healthCheckScriptFile} > /dev/null 2>&1\n`)
       return arr.join('\n').replace(/\n{2,}/g, '\n')
     })
     .then(data => fs.writeFile(deploymentPlan.manager.crontabFile, data))
