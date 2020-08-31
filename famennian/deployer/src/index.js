@@ -22,7 +22,7 @@ const terminate = err => commons.proc.terminateProcess('Could not revert changes
 
 checkSystem()
   .catch(() => commons.proc.terminateProcess('Unsupported platform'))
-  .then(() => commons.files.fsExtra.readJson(deploymentPlanFile))
+  .then(commands => commons.files.fsExtra.readJson(deploymentPlanFile).then(deploymentPlan => Object.assign(deploymentPlan, { commands })))
   .catch(() => commons.proc.terminateProcess('Deployment plan was not found: ' + deploymentPlanFile))
   .then(deploymentPlan => {
     deploymentPlan.configDir = deploymentPlan.configDir || '/etc/devonian-containers'

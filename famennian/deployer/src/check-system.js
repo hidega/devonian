@@ -1,20 +1,18 @@
 'use strict'
 
-const commons = require('@permian/commons')
 const Mixins = require('./mixins')
 
 module.exports = () => {
   const mixins = new Mixins()
-  let result
-  if (commons.platform.isLinux()) {
-    result = mixins.spawnProcess('podman', ['-v'])
-      .then(() => mixins.spawnProcess('bash', ['--version']))
-      .then(() => mixins.spawnProcess('cat', ['/etc/crontab']))
-      .then(() => mixins.spawnProcess('touch', ['--version']))
-      .then(() => mixins.spawnProcess('mkdir', ['--version']))
-      .then(() => mixins.spawnProcess('chmod', ['--version']))
-  } else {
-    result = Promise.reject()
-  }
-  return result
+
+  const findCommand = command => mixins.spawnProcess('whereis', [command]).then(result => {
+    const locations = ['/bin', '/sbin', '/usr/bin', '/usr/sbin', 'usr/local/bin', 'usr/local/sbin']
+    const txt = result.output.error + result.output.info
+    const location = locations.find(l => txt.includes(l + '/' + command))
+    return location ? Promise.resolve([command, location + '/' + command]) : Promise.reject('Unsupported platform')
+  })
+
+  const f = (commands, r) => commands.length ? findCommand(commands.pop()).then(cmd => f(commands, (r[cmd[0]] = cmd[1]) && r)) : Promise.resolve(r)
+
+  return f(['podman', 'bash', 'logger', 'cat', 'touch', 'mkdir', 'crontab'], {})
 }
