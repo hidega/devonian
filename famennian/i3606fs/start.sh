@@ -1,5 +1,6 @@
 #!/bin/bash
 
-BASEDIR=$(dirname "$0")
+nohup /opt/prg/nodejs/bin/node /home/andras/filesrv/package/index.js > /dev/null 2>&1 &
 
-nohup node $BASEDIR/index.js  > /dev/null 2>&1 &
+/usr/bin/logger Fileserver was restarted by $(whoami)
+
