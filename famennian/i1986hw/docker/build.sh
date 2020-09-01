@@ -1,9 +1,9 @@
 #!/bin/bash
 
-. ../commons.sh
+. ../../../commons.sh
 
-docker image rm -f hidand/i1986hw:1
+$OCI image rm -f hidand/i1986hw:1
 
-docker build -t hidand/i1986hw:1 .
+$OCI build -t hidand/i1986hw:1 .
 
 echo result $?
