@@ -1,0 +1,1 @@
+"use strict";var _require=require("@permian/commons"),proc=_require.proc,HelloWorld=require("@silurian/helloworld"),cfg=require("./cfg"),cmd=process.argv[2];if("start"===cmd)HelloWorld.start(cfg,function(r){return r&&"0"!==r&&proc.terminateProcess(r)});else{if("healthcheck"!==cmd)throw Error("Bad command");HelloWorld.ping(cfg,function(r){return proc.terminateProcess(r)})}

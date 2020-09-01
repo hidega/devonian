@@ -1,0 +1,3 @@
+/etc/containers/storage.conf
+# max storage size for all containers
+size=2000m  2g
