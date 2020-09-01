@@ -12,6 +12,6 @@ FileServer.start({
     urlBasePath: 'web'
   },
   fileServer: {
-    basedir: __dirname + '/files'
+    basedir: '/home/andras/files/filesrv'
   }
 })

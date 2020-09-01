@@ -5,7 +5,8 @@
   "main": "index.js",
   "private": true,
   "scripts": {
-    "tr": "node -e \"require('@permian/build-tasks').taskrunner()\""
+    "tr": "node -e \"require('@permian/build-tasks').taskrunner()\"",
+    "build": "webpack"
   },
   "dependencies": {
     "@permian/commons": "https://people.inf.elte.hu/hiaiaat/npm/permian-commons-1.0.18.tgz",
@@ -13,10 +14,15 @@
   },
   "license": "Apache-2.0",
   "files": [
-    "index.js",
+    "dist/main.js",
     "start.sh",
-    "dirsum.txt",
-    "files/**",
-    "lib/**"
-  ]
+    "healthcheck.sh",
+    "reinstall.sh",
+    "dirsum.txt"
+  ],
+  "devDependencies": {
+    "@permian/build-tasks": "https://people.inf.elte.hu/hiaiaat/npm/permian-build-tasks-1.0.4.tgz",
+    "webpack": "^4.44.1",
+    "webpack-cli": "^3.3.12"
+  }
 }
