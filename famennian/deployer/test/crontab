@@ -1,6 +1,0 @@
-02 * * * * root C:\git_repos\devonian\famennian\deployer\test\healthcheck.sh > /dev/null 2>&1
-02 * * * * root C:\git_repos\devonian\famennian\deployer\test\healthcheck.sh > /dev/null 2>&1
-02 * * * * root C:\git_repos\devonian\famennian\deployer\test\healthcheck.sh > /dev/null 2>&1
-02 * * * * root C:\git_repos\devonian\famennian\deployer\test\healthcheck.sh > /dev/null 2>&1
-02 * * * * root C:\git_repos\devonian\famennian\deployer\test\healthcheck.sh > /dev/null 2>&1
-02 * * * * root C:\git_repos\devonian\famennian\deployer\test\healthcheck.sh > /dev/null 2>&1

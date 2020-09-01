@@ -1,3 +1,0 @@
-## deployer
-
-COntainer deployer script
