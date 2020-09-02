@@ -1,6 +1,6 @@
 #!/bin/bash
 
-. ../commons.sh
+. ../../commons.sh
 
 $OCI run -it --rm hidand/nodebase:1 bash
 
