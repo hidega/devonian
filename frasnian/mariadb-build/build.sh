@@ -1,6 +1,6 @@
 #!/bin/bash 
 
-. ../commons.sh
+. ../../commons.sh
 
 $OCI image rm -f hidand/mariadb-build:1
 

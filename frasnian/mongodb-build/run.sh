@@ -1,6 +1,6 @@
 #!/bin/bash
 
-. ../commons.sh
+. ../../commons.sh
 
 $OCI run -it hidand/mongodb-build:1 bash
 
