@@ -5,6 +5,7 @@ RUN dnf install -y https://people.inf.elte.hu/hiaiaat/rpm/devonian-mariadb-1-1.x
     chown -cR mysql /opt/prg/nodejs/ > /dev/null 2>&1 && \
     chown -cR mysql /opt/prg/mariadb/ > /dev/null 2>&1  && \
     mkdir /opt/data && mkdir /opt/data/mariadb && \
-    chown -cR mysql /opt/data/mariadb/ > /dev/null 2>&1 
+    chown -cR mysql /opt/data/mariadb/ > /dev/null 2>&1 && \
+    dnf clean all
 
 

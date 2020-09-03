@@ -4,6 +4,7 @@ RUN dnf install -y wget https://people.inf.elte.hu/hiaiaat/rpm/devonian-nodebase
     useradd middleware --shell /sbin/nologin && \
     chown -cfR middleware /opt/prg/nodejs/ > /dev/null 2>&1 && \
     ln -s /opt/prg/nodejs/bin/node /usr/bin/node && \
-    ln -s /opt/prg/nodejs/bin/npm /usr/bin/npm
+    ln -s /opt/prg/nodejs/bin/npm /usr/bin/npm && \
+    dnf clean all
      
 
