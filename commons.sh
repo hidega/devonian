@@ -1,3 +1,3 @@
 #!/bin/bash
 
-OCI=podman
+OCI="podman --cgroup-manager=cgroupfs"
