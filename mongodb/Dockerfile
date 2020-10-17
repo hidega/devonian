@@ -6,5 +6,3 @@ RUN dnf install -y libunwind https://people.inf.elte.hu/hiaiaat/rpm/devonian-mon
     chown middleware -c /opt/data/mongodb > /dev/null 2>&1 && \
     dnf clean all
 
-
-

@@ -1,0 +1,23 @@
+{
+  "name": "@famennian/i2871hew",
+  "version": "1.0.1",
+  "description": "Hello world HTTP service on proxmox",
+  "main": "index.js",
+  "private": true,
+  "devDependencies": {
+    "@devonian/build-tasks": "../../../build-tasks"
+  },
+  "scripts": {
+     "tr": "node ./node_modules/@devonian/build-tasks"
+  },
+  "dependencies": {
+    "@permian/commons": "https://people.inf.elte.hu/hiaiaat/npm/permian-commons-1.1.0.tgz",
+    "@silurian/helloworld": "https://people.inf.elte.hu/hiaiaat/npm/silurian-helloworld-1.0.2.tgz"
+  },
+  "license": "Apache-2.0",
+  "files": [
+    "index.js",
+    "dirsum.txt",
+    "lib/**"
+  ]
+}
