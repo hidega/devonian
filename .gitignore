@@ -3,3 +3,6 @@ generated-jsdoc/
 package-lock.json
 local.json
 **.tgz
+**.tar.gz
+dirsum.txt
+**.tmp
