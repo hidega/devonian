@@ -17,7 +17,7 @@
     "index.js",
     "start.sh",
     "healthcheck.sh",
-    "cfg.json",
+    "cfg.js",
     "dirsum.txt",
     "lib/**"
   ]

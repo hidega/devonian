@@ -2,7 +2,7 @@
   "restEndpoint": {
     "urlBasePath": "file-service",
     "maxConnections": 32,
-    "port": 5802,
+    "port": 12080,
     "host": "localhost",
     "id": "1",
     "requestTimeout": 20000,
