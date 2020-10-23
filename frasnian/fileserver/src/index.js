@@ -1,14 +1,14 @@
 'use strict'
 
 var commons = require('@permian/commons')
-var Service = require('@silurian/helloworld')
+var Service = require('@silurian/filesrv')
 var cfg = {}
 
 try {
   cfg = commons.files.fsExtra.readJsonSync(commons.files.resolvePath(commons.files.packageRoot, 'cfg.json'))
-} catch (e) {
-  console.log(e)
-}
+} catch(e) { 
+  console.log(e) 
+}  
 
 var cmd = process.argv[2]
 
@@ -19,3 +19,4 @@ if (cmd === 'start') {
 } else {
   throw Error('Bad command')
 }
+

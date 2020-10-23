@@ -1,5 +1,5 @@
 {
-  "name": "@famennian/i2871hew",
+  "name": "@frasnian/helloworld",
   "version": "1.0.1",
   "description": "Hello world HTTP service on proxmox",
   "main": "index.js",
@@ -15,6 +15,9 @@
   "license": "Apache-2.0",
   "files": [
     "index.js",
+    "start.sh",
+    "healthcheck.sh",
+    "cfg.json",
     "dirsum.txt",
     "lib/**"
   ]

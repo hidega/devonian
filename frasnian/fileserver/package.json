@@ -1,16 +1,14 @@
 {
-  "name": "@famennian/i2871fsv",
+  "name": "@frasnian/fileserver",
   "version": "1.0.1",
-  "description": "HTTP file service on proxmox",
+  "description": "HTTP file service",
   "private": true,
   "devDependencies": {
-    "@devonian/build-tasks": "../../../build-tasks"
+    "@devonian/build-tasks": "../../build-tasks",
+    "@silurian/filesrv": "https://people.inf.elte.hu/hiaiaat/npm/silurian-filesrv-1.0.2.tgz"
   },
   "scripts": {
     "tr": "node ./node_modules/@devonian/build-tasks"
-  },
-  "dependencies": {
-    "@silurian/filesrv": "https://people.inf.elte.hu/hiaiaat/npm/silurian-filesrv-1.0.2.tgz"
   },
   "license": "Apache-2.0",
   "files": [
@@ -19,7 +17,6 @@
     "healthcheck.sh",
     "start.sh",
     "dirsum.txt",
-    "files/**",
     "lib/**"
   ]
 }
