@@ -6,3 +6,4 @@ local.json
 **.tar.gz
 dirsum.txt
 **.tmp
+last_healthcheck

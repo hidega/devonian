@@ -2,9 +2,9 @@
 
 . ../commons.sh
 
-$OCI image rm -f hidand/nodebase-build:1
+$OCI image rm -f devonian/nodebase-build:1
 
-$OCI build -t hidand/nodebase-build:1 .
+$OCI build -t devonian/nodebase-build:1 .
 
 echo result $?
 

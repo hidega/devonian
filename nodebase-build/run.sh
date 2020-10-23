@@ -2,7 +2,7 @@
 
 . ../commons.sh
 
-$OCI run -it hidand/nodebase-build:1 bash
+$OCI run -it devonian/nodebase-build:1 bash
 
 echo result: $?
 

@@ -1,6 +1,0 @@
-{
- "logToStdout": true,
- "host": "i2871fsv",
- "port": 9000,
- "urlBasePath": "fileservice"
-}

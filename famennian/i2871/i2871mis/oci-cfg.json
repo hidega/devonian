@@ -1,0 +1,25 @@
+{
+  "imageFrom": "devonian/nodebase:1",
+  "imageName": "i2871srv",
+  "imageDomain": "frasnian",
+  "imageTag": "1",
+  "packages": [{
+      "name": "filesrv",      
+      "pkgFile": "pkg1.tgz",      
+      "uri": "http://some.uri/npm/pkg1.tgz",
+      "addCfg": {
+        "wazz": 1
+      }
+    }, {
+      "name": "helloworld",      
+      "pkgFile": "pkg2.tgz",      
+      "uri": "http://some.uri/npm/pkg2.tgz"
+    }, {
+      "name": "timesrv",      
+      "pkgFile": "pkg3.tgz",      
+      "uri": "http://some.uri/npm/pkg3.tgz" 
+    }
+  ],
+  "destDir": "./oci",
+  "ociCmd": "podman --cgroup-manager=cgroupfs"
+}

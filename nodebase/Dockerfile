@@ -6,5 +6,5 @@ RUN dnf install -y wget jq chkconfig https://people.inf.elte.hu/hiaiaat/rpm/devo
     ln -s /opt/prg/nodejs/bin/node /usr/bin/node && \
     ln -s /opt/prg/nodejs/bin/npm /usr/bin/npm && \
     dnf clean all
-     
+
 

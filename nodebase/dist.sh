@@ -2,7 +2,7 @@
 
 . ../commons.sh
 
-$OCI save hidand/nodebase:1 | gzip > ./hidand-nodebase_1.tar.gz
+$OCI save devonian/nodebase:1 | gzip > ./devonian-nodebase_1.tar.gz
 
 echo result: $?
 
