@@ -7,3 +7,4 @@ local.json
 dirsum.txt
 **.tmp
 last_healthcheck
+lib/

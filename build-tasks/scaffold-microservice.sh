@@ -1,6 +1,6 @@
 #!/bin/bash
 
-SERVICE=$2
+SERVICE=$1
 
 echo '#/bin/bash 
 DIR="$(dirname "$(readlink -f "$0")")"
@@ -21,8 +21,10 @@ var Service = require('$SERVICE')
 var cfg = {}
 
 try {
-  cfg = commons.files.fsExtra.readJsonSync('../cfg')
-} catch(e) {}
+  cfg = commons.files.fsExtra.readJsonSync(commons.files.resolvePath(commons.files.packageRoot, 'cfg.json'))
+} catch(e) { 
+  console.log(e) 
+}  
 
 var cmd = process.argv[2]
 
