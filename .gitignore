@@ -8,3 +8,4 @@ dirsum.txt
 **.tmp
 last_healthcheck
 lib/
+**.nopush
