@@ -1,0 +1,6 @@
+/lib
+/index.js
+*.tmp
+dirsum.txt
+local.json
+

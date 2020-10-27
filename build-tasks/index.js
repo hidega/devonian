@@ -1,7 +1,12 @@
 'use strict'
 
-var buildTasks = require('@permian/build-tasks')
+var createBuildTasks = require('@permian/build-tasks')
+var oci = require('./oci')
 
-module.exports = buildTasks({
+var buildTasks = createBuildTasks({
   buildTasks: { buildTasksRoot: __dirname }
 })
+
+buildTasks.oci = oci
+
+module.exports = buildTasks
