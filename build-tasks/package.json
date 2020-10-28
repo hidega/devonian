@@ -4,7 +4,8 @@
   "description": "Build-tasks",
   "private": true,
   "devDependencies": {
-    "@permian/build-tasks": "https://people.inf.elte.hu/hiaiaat/npm/permian-build-tasks-1.0.7.tgz"
+    "@permian/build-tasks": "https://people.inf.elte.hu/hiaiaat/npm/permian-build-tasks-1.0.7.tgz",
+    "@devonian/deploymentif": "https://people.inf.elte.hu/hiaiaat/npm/devonian-deploymentif-1.0.1.tgz"
   },
   "license": "Apache-2.0",
   "scripts": {

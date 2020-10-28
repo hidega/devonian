@@ -2,6 +2,7 @@
 
 var path = require('path')
 var fs = require('fs-extra')
+var deploymentIf = require('@devonian/deploymentif')
 
 var optPrg = '/opt/prg'
 
@@ -47,13 +48,14 @@ ${cfg.ociCmd} run -it --ip=192.168.33.11 --network=devoniannet --add-host=monito
 echo result: $?
 `
 
-var createPkgDirs = cfg => Promise.all(cfg.packages.map(p => fs.ensureDir(path.resolve(cfg.destDir, 'opt', 'prg', p.name))
+var createPkgDir = cfg => Promise.all(cfg.packages.map(p => fs.ensureDir(path.resolve(cfg.destDir, 'opt', 'prg', p.name))
   .then(() => fs.writeJson(path.resolve(cfg.destDir, 'opt', 'prg', p.name, 'cfg.json'), p.addCfg || {}))))
 
 var processFiles = (cfg, callback) => fs.remove(cfg.destDir)
   .then(() => fs.ensureDir(cfg.destDir))
-  .then(() => cfg.optDir && fs.ensureDir(path.resolve(cfg.destDir, 'opt')).then(() => fs.copy(cfg.optDir, path.resolve(cfg.destDir, 'opt'))))
-  .then(() => createPkgDirs(cfg))
+  .then(() => fs.ensureDir(path.resolve(cfg.destDir, 'opt')))
+  .then(() => cfg.optDir && fs.copy(cfg.optDir, path.resolve(cfg.destDir, 'opt')))
+  .then(() => createPkgDir(cfg))
   .then(() => fs.writeFile(path.resolve(cfg.destDir, 'Dockerfile'), dockerfile(cfg)))
   .then(() => fs.writeFile(path.resolve(cfg.destDir, 'build.sh'), build(cfg)))
   .then(() => fs.chmod(path.resolve(cfg.destDir, 'build.sh'), 0o755))
@@ -63,23 +65,20 @@ var processFiles = (cfg, callback) => fs.remove(cfg.destDir)
   .then(() => fs.chmod(path.resolve(cfg.destDir, 'run.sh'), 0o755))
   .catch(e => callback(e || 2))
 
-var oci = (cfg, callback) => {
-  cfg = Object.assign({
-    imageFrom: 'devonian/nodebase:1',
-    imageName: '',
-    imageDomain: 'devonian',
-    imageTag: '1',
-    packages: [],
-    expose: [],
-    optDir: false,
-    destDir: '/tmp/oci',
-    ociCmd: 'podman'
-  }, cfg)
-  cfg.destDir = path.resolve(cfg.destDir)
-  cfg.packages.length ? processFiles(cfg, callback) : callback()
-}
-
 module.exports = (params, callback) => fs.readJson(params.args[0] || path.resolve('./oci-cfg.json'))
-  .then(cfg => oci(cfg, callback))
+  .then(cfg => {
+    cfg = Object.assign({
+      imageFrom: 'devonian/nodebase:1',
+      imageName: '',
+      imageDomain: '',
+      imageTag: '1',
+      serviceExecutable: './lib/index.js',
+      expose: [],
+      optDir: false,
+      ociCmd: 'podman'
+    }, cfg)
+    cfg.destDir = path.resolve(cfg.destDir)
+    processFiles(cfg, callback)
+  })
   .catch(e => callback(e || 1))
 

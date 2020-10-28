@@ -22,7 +22,7 @@
 (3) Implementation
 - oci task: builds an image from a .json parameter file: {
   "imageFrom": "devonian/nodebase:1",
-  "imageName": "famennian/someservice:1",
+  "imageName": "someservice",
   "imageDomain": "frasnian",
   "imageTag": "1",
   "serviceExecutable": "lib/index.js",
@@ -31,4 +31,4 @@
   "optDir": "opt",
   "ociCmd": "podman --cgroup-manager=cgroupfs"
  }
-- the serviceExecutable must provide ping() and start() functions, just like above
+- the serviceExecutable must provide ping() and start() functions, just like in (1)
