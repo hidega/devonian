@@ -4,28 +4,23 @@ var path = require('path')
 var fs = require('fs-extra')
 var deploymentIf = require('@devonian/deploymentif')
 
-var optPrg = '/opt/prg'
-
-var startCmd = cfg => cfg.packages.map(p => `cd ${optPrg}/${p.name}/package && ./start.sh && echo $? > ./start_result`).join(' && ')
-
-var runContainer = cfg => cfg.packages.reduce((acc, p) => `${acc}    cd ${optPrg}/${p.name} && \\
-    wget ${p.uri} && \\
-    tar -xf ${p.pkgFile} && \\
-    cp ${optPrg}/${p.name}/cfg.json ${optPrg}/${p.name}/package && \\
-    chown -cR middleware ${optPrg}/${p.name}/ > /dev/null 2>&1 && \\
-`, 'echo && \\\n') + (cfg.runPlus ? `    ${cfg.runPlus}\n` : '    echo\n')
+var runContainer = cfg => ` chown -cR ${cfg.serviceUser} ${deploymentIf.SERVICE_HOME} && \\
+   echo '${cfg.nodeBin} ${deploymentIf.SERVICE_HOME}/${cfg.serviceExecutable.split('\/').pop()} ${deploymentIf.START_ARG}' > ${deploymentIf.SERVICE_HOME}/${deploymentIf.START_CMD} && \\
+   echo '${cfg.nodeBin} ${deploymentIf.SERVICE_HOME}/${cfg.serviceExecutable.split('\/').pop()} ${deploymentIf.HEALTHCHECK_ARG}' > ${deploymentIf.SERVICE_HOME}/${deploymentIf.HEALTHCHECK_CMD} && \\
+   chmod -c 755 ${deploymentIf.SERVICE_HOME}/${deploymentIf.START_CMD} && \\
+   chmod -c 755 ${deploymentIf.SERVICE_HOME}/${deploymentIf.HEALTHCHECK_CMD} `
 
 var dockerfile = cfg => `# generated on ${new Date().toISOString()}
 
 FROM ${cfg.imageFrom} 
 
-${cfg.optDir ? 'COPY opt /opt' : ''}
+COPY opt /opt
 
 RUN ${runContainer(cfg)}
 
-CMD su -s /bin/bash -c "${startCmd(cfg)}" middleware 
+CMD su -s /bin/bash -c "${deploymentIf.SERVICE_HOME}/${deploymentIf.START_CMD}" ${cfg.serviceUser} && echo $? > ./start_result
 
-${cfg.expose.reduce((acc, port) => `${acc}EXPOSE ${port}\n`, '')}
+${cfg.expose.reduce((acc, port) => acc + 'EXPOSE ' + port + '\n', '')}
 `
 
 var dist = cfg => `#!/bin/bash
@@ -38,32 +33,43 @@ ${cfg.ociCmd} image rm -f ${cfg.imageDomain}/${cfg.imageName}:${cfg.imageTag}
 ${cfg.ociCmd} build -t ${cfg.imageDomain}/${cfg.imageName}:${cfg.imageTag} .
 echo result $?
 `
+var ipFromRange = ip => ip.split('.').slice(0, 3).join('.')
 
 var run = cfg => `#!/bin/bash
 ${cfg.ociCmd} container rm -af && \\
-${cfg.ociCmd} network rm devoniannet && \\
-${cfg.ociCmd} network create --subnet=192.168.33.0/24 devoniannet && \\
-${cfg.ociCmd} run --ip=192.168.33.10 --network=devoniannet --add-host=monitor:192.168.33.11 --add-host=${cfg.imageName}:192.168.33.10 --hostname=${cfg.imageName} --name=${cfg.imageName} --detach=true ${cfg.imageDomain}/${cfg.imageName}:${cfg.imageTag} && \\
-${cfg.ociCmd} run -it --ip=192.168.33.11 --network=devoniannet --add-host=monitor:192.168.33.11 --add-host=${cfg.imageName}:192.168.33.10 --name=monitor --detach=true hidand/monitor:1 bash && \\
+${cfg.ociCmd} network rm ${deploymentIf.NETWORK_NAME} && \\
+${cfg.ociCmd} network create --subnet=${deploymentIf.NETWORK_IP} ${deploymentIf.NETWORK_NAME} && \\
+${cfg.ociCmd} run --ip=${ipFromRange(deploymentIf.NETWORK_IP)}.10 --network=${deploymentIf.NETWORK_NAME} --add-host=monitor:${ipFromRange(deploymentIf.NETWORK_IP)}.11 \\
+             --add-host=${cfg.imageName}:${ipFromRange(deploymentIf.NETWORK_IP)}.10 --hostname=${cfg.imageName} --name=${cfg.imageName} \\
+             --detach=true ${cfg.imageDomain}/${cfg.imageName}:${cfg.imageTag} && \\
+${cfg.ociCmd} run -it --ip=${ipFromRange(deploymentIf.NETWORK_IP)}.11 --network=${deploymentIf.NETWORK_NAME} --add-host=monitor:${ipFromRange(deploymentIf.NETWORK_IP)}.11 \\
+             --add-host=${cfg.imageName}:${ipFromRange(deploymentIf.NETWORK_IP)}.10 --name=monitor --detach=true devonian/monitor:1 bash && \\
 echo result: $?
 `
 
-var createPkgDir = cfg => Promise.all(cfg.packages.map(p => fs.ensureDir(path.resolve(cfg.destDir, 'opt', 'prg', p.name))
-  .then(() => fs.writeJson(path.resolve(cfg.destDir, 'opt', 'prg', p.name, 'cfg.json'), p.addCfg || {}))))
+var getServiceHome = () => {
+  if(!deploymentIf.SERVICE_HOME.startsWith('/opt/')) {
+    throw new Error('service home is expected to be in /opt')
+  }
+  return deploymentIf.SERVICE_HOME.substr(1)
+}
 
-var processFiles = (cfg, callback) => fs.remove(cfg.destDir)
-  .then(() => fs.ensureDir(cfg.destDir))
-  .then(() => fs.ensureDir(path.resolve(cfg.destDir, 'opt')))
-  .then(() => cfg.optDir && fs.copy(cfg.optDir, path.resolve(cfg.destDir, 'opt')))
-  .then(() => createPkgDir(cfg))
-  .then(() => fs.writeFile(path.resolve(cfg.destDir, 'Dockerfile'), dockerfile(cfg)))
-  .then(() => fs.writeFile(path.resolve(cfg.destDir, 'build.sh'), build(cfg)))
-  .then(() => fs.chmod(path.resolve(cfg.destDir, 'build.sh'), 0o755))
-  .then(() => fs.writeFile(path.resolve(cfg.destDir, 'dist.sh'), dist(cfg)))
-  .then(() => fs.chmod(path.resolve(cfg.destDir, 'dist.sh'), 0o755))
-  .then(() => fs.writeFile(path.resolve(cfg.destDir, 'run.sh'), run(cfg)))
-  .then(() => fs.chmod(path.resolve(cfg.destDir, 'run.sh'), 0o755))
-  .catch(e => callback(e || 2))
+var processFiles = (cfg, callback) => {
+  var resolveByDest = d => path.resolve(cfg.destDir, d)
+  var buildServiceHome = resolveByDest(getServiceHome()) 
+  return fs.remove(cfg.destDir)
+    .then(() => fs.ensureDir(cfg.destDir))
+    .then(() => fs.ensureDir(buildServiceHome))
+    .then(() => fs.copy(cfg.serviceExecutable, resolveByDest(getServiceHome() + '/' + cfg.serviceExecutable.split('\/').pop())))
+    .then(() => fs.writeFile(resolveByDest('Dockerfile'), dockerfile(cfg)))
+    .then(() => fs.writeFile(resolveByDest('build.sh'), build(cfg)))
+    .then(() => fs.chmod(resolveByDest('build.sh'), 0o755))
+    .then(() => fs.writeFile(resolveByDest('dist.sh'), dist(cfg)))
+    .then(() => fs.chmod(resolveByDest('dist.sh'), 0o755))
+    .then(() => fs.writeFile(resolveByDest('run.sh'), run(cfg)))
+    .then(() => fs.chmod(resolveByDest('run.sh'), 0o755))
+    .catch(e => callback(e || 2))
+}
 
 module.exports = (params, callback) => fs.readJson(params.args[0] || path.resolve('./oci-cfg.json'))
   .then(cfg => {
@@ -72,13 +78,17 @@ module.exports = (params, callback) => fs.readJson(params.args[0] || path.resolv
       imageName: '',
       imageDomain: '',
       imageTag: '1',
-      serviceExecutable: './lib/index.js',
+      nodeBin: '/opt/prg/nodejs/bin/node',
+      serviceExecutable: 'lib/index.js',
       expose: [],
-      optDir: false,
+      serviceUser: 'middleware', 
+      destDir: 'oci-build',
       ociCmd: 'podman'
     }, cfg)
-    cfg.destDir = path.resolve(cfg.destDir)
+    var resolvePkgPath = p => p.startsWith('/') ? p : path.resolve(params.cwd, p) 
+    cfg.destDir = resolvePkgPath(cfg.destDir)
+    cfg.serviceExecutable = resolvePkgPath(cfg.serviceExecutable) 
     processFiles(cfg, callback)
   })
-  .catch(e => callback(e || 1))
+  .catch(e => {console.log(e);callback(e || 1)}) 
 

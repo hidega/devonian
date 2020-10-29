@@ -1,0 +1,1 @@
+"use strict";var e=require("@permian/commons"),r=require("@silurian/filesrv"),t={};try{t=require("../cfg")}catch(r){console.log(r)}var c=process.argv[2];if("start"===c)r.start(t,function(r){return r&&0!==r&&e.proc.terminateProcess(r)});else{if("healthcheck"!==c)throw Error("Bad command");r.ping(t,function(r){return e.proc.terminateProcess(r)})}
