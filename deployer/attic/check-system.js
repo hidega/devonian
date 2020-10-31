@@ -11,14 +11,10 @@ var findCommand = command => commons.spawnProcess('whereis', [command]).then(res
     .otherwise(() => Promise.reject('Unsupported platform'))
 })
 
-module.exports = deploymentPlan => {
+module.exports = () => {
   commons.linuxOrThrow()
   var f = (commands, r) => commons.when(commands.length > 0)
     .then(() => findCommand(commands.pop()).then(cmd => f(commands, (r[cmd[0]] = cmd[1]) && r)))
     .otherwise(() => Promise.resolve(r))
   return f(['podman', 'bash', 'logger', 'cat', 'chmod', 'touch', 'mkdir', 'crontab'], {})
-    .then(commands => ({
-      deploymentPlan: commons.assignRecursive(deploymentPlan, { commands }),
-      revert: e => commons.terminateProcess('error: ' + e, 1)
-    }))
 }

@@ -16,7 +16,7 @@ function ContainerDeployer(revert, deploymentPlan) {
       .on(container.env, e => ` --env ${e.name}=${e.value}`)
       .on(container.cpus, c => ` --cpus=${c}`)
       .on(container.stopTimeoutSecs, t => ` --stop-timeout=${t}`)
-      .on(container.hostname, h => ` --hostname=${h}`)
+      //.on(container.hostname, h => ` --hostname=${h}`)
       .on(container.ip, i => ` --ip=${i}`)
       .on(container.network, n => ` --network=${n}`)
       .on(container.healthRetries, r => ` --health-retries=${r}`)
