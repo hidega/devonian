@@ -1,4 +1,4 @@
-// generated on Sun  1 Nov 13:12:26 CET 2020
+// generated on Sun  1 Nov 15:50:38 CET 2020
 'use strict'
 
 var commons = require('@permian/commons')
@@ -9,8 +9,8 @@ commons.lang.isFunction(Service[deploymentIf.START_FUNCTION]) || commons.lang.is
 
 var cfg = {}
 try {
-  cfg = commons.fs.readJsonSync('./cfg.json')
-} catch(e) {}
+  cfg = commons.files.fsExtra.readJsonSync(commons.files.resolvePath(deploymentIf.SERVICE_HOME, 'cfg.json'))
+} catch(e) { console.log(e) }
 
 var cmd = process.argv[2]
 

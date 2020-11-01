@@ -11,7 +11,7 @@ commons.lang.isFunction(Service[deploymentIf.START_FUNCTION]) || commons.lang.is
 
 var cfg = {}
 try {
-  cfg = commons.fs.readJsonSync('./cfg.json')
+  cfg = commons.files.fsExtra.readJsonSync(commons.files.resolvePath(deploymentIf.SERVICE_HOME, 'cfg.json'))
 } catch(e) {}
 
 var cmd = process.argv[2]
