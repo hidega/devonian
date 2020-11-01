@@ -1,22 +1,26 @@
+// generated on Sun  1 Nov 17:40:13 CET 2020
 'use strict'
 
 var commons = require('@permian/commons')
+var deploymentIf = require('@devonian/deploymentif')
 var Service = require('@silurian/helloworld')
-var cfg = {}
 
-try {
-  cfg = require('../cfg')
-} catch(e) {
-  console.log(e)
+if(commons.lang.isntFunction(Service[deploymentIf.START_FUNCTION]) || commons.lang.isntFunction(Service[deploymentIf.HEALTHCHECK_FUNCTION])) {
+  commons.proc.terminateProcess('Missing service method')
 }
+
+var cfg = {}
+try {
+  cfg = commons.files.fsExtra.readJsonSync(commons.files.resolvePath(deploymentIf.SERVICE_HOME, 'cfg.json'))
+} catch(e) {}
 
 var cmd = process.argv[2]
 
-if (cmd === 'start') {
-  Service.start(cfg, err => err && err !== 0 && commons.proc.terminateProcess(err))
-} else if (cmd === 'healthcheck') {
-  Service.ping(cfg, err => commons.proc.terminateProcess(err))
+if (cmd === deploymentIf.START_ARG) {
+  Service[deploymentIf.START_FUNCTION](cfg)
+} else if (cmd === deploymentIf.HEALTHCHECK_ARG) {
+  Service[deploymentIf.HEALTHCHECK_FUNCTION](cfg, commons.proc.terminateProcess)
 } else {
-  throw Error('Bad command')
+  commons.proc.terminateProcess('Bad command')
 }
 

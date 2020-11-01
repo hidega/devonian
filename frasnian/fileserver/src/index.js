@@ -1,4 +1,4 @@
-// generated on Sun  1 Nov 16:48:12 CET 2020
+// generated on Sun  1 Nov 17:32:09 CET 2020
 'use strict'
 
 var commons = require('@permian/commons')
@@ -19,7 +19,7 @@ var cmd = process.argv[2]
 if (cmd === deploymentIf.START_ARG) {
   Service[deploymentIf.START_FUNCTION](cfg)
 } else if (cmd === deploymentIf.HEALTHCHECK_ARG) {
-  Service[deploymentIf.HEALTHCHECK_FUNCTION](cfg)
+  Service[deploymentIf.HEALTHCHECK_FUNCTION](cfg, commons.proc.terminateProcess)
 } else {
   commons.proc.terminateProcess('Bad command')
 }
