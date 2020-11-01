@@ -1,16 +1,18 @@
-// generated on Sun  1 Nov 15:50:38 CET 2020
+// generated on Sun  1 Nov 16:48:12 CET 2020
 'use strict'
 
 var commons = require('@permian/commons')
 var deploymentIf = require('@devonian/deploymentif')
 var Service = require('@silurian/filesrv')
 
-commons.lang.isFunction(Service[deploymentIf.START_FUNCTION]) || commons.lang.isFunction(Service[deploymentIf.HEALTHCHECK_FUNCTION]) || commons.proc.terminateProcess('Missing service method', 2) 
+if(commons.lang.isntFunction(Service[deploymentIf.START_FUNCTION]) || commons.lang.isntFunction(Service[deploymentIf.HEALTHCHECK_FUNCTION])) {
+  commons.proc.terminateProcess('Missing service method')
+}
 
 var cfg = {}
 try {
   cfg = commons.files.fsExtra.readJsonSync(commons.files.resolvePath(deploymentIf.SERVICE_HOME, 'cfg.json'))
-} catch(e) { console.log(e) }
+} catch(e) {}
 
 var cmd = process.argv[2]
 
@@ -19,6 +21,6 @@ if (cmd === deploymentIf.START_ARG) {
 } else if (cmd === deploymentIf.HEALTHCHECK_ARG) {
   Service[deploymentIf.HEALTHCHECK_FUNCTION](cfg)
 } else {
-  commons.proc.terminateProcess('Bad command', 1)
+  commons.proc.terminateProcess('Bad command')
 }
 

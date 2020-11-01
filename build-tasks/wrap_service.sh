@@ -7,7 +7,9 @@ var commons = require('@permian/commons')
 var deploymentIf = require('@devonian/deploymentif')
 var Service = require('$1')
 
-commons.lang.isFunction(Service[deploymentIf.START_FUNCTION]) || commons.lang.isFunction(Service[deploymentIf.HEALTHCHECK_FUNCTION]) || commons.proc.terminateProcess('Missing service method', 2) 
+if(commons.lang.isntFunction(Service[deploymentIf.START_FUNCTION]) || commons.lang.isntFunction(Service[deploymentIf.HEALTHCHECK_FUNCTION])) {
+  commons.proc.terminateProcess('Missing service method')
+}
 
 var cfg = {}
 try {
@@ -21,6 +23,6 @@ if (cmd === deploymentIf.START_ARG) {
 } else if (cmd === deploymentIf.HEALTHCHECK_ARG) {
   Service[deploymentIf.HEALTHCHECK_FUNCTION](cfg)
 } else {
-  commons.proc.terminateProcess('Bad command', 1)
+  commons.proc.terminateProcess('Bad command')
 }
 " > ./index.js
