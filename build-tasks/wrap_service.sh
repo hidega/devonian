@@ -1,9 +1,11 @@
-// generated on Sun  1 Nov 13:12:26 CET 2020
+#!/bin/bash
+
+echo "// generated on `date`
 'use strict'
 
 var commons = require('@permian/commons')
 var deploymentIf = require('@devonian/deploymentif')
-var Service = require('@silurian/filesrv')
+var Service = require('$1')
 
 commons.lang.isFunction(Service[deploymentIf.START_FUNCTION]) || commons.lang.isFunction(Service[deploymentIf.HEALTHCHECK_FUNCTION]) || commons.proc.terminateProcess('Missing service method', 2) 
 
@@ -21,4 +23,4 @@ if (cmd === deploymentIf.START_ARG) {
 } else {
   commons.proc.terminateProcess('Bad command', 1)
 }
-
+" > ./index.js

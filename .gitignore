@@ -8,4 +8,5 @@ dirsum.txt
 **.tmp
 last_healthcheck
 lib/
+oci-build/
 **.nopush

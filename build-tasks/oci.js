@@ -90,5 +90,5 @@ module.exports = (params, callback) => fs.readJson(params.args[0] || path.resolv
     cfg.serviceExecutable = resolvePkgPath(cfg.serviceExecutable) 
     processFiles(cfg, callback)
   })
-  .catch(e => {console.log(e);callback(e || 1)}) 
+  .catch(e => callback(e || 1)) 
 

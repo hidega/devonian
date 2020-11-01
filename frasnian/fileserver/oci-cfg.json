@@ -1,4 +1,7 @@
 {
   "imageName": "fileserver",
-  "imageDomain": "frasnian"
+  "imageDomain": "frasnian",
+  "imageTag": "1",
+  "imageFrom": "devonian/nodebase:1",
+  "ociCmd": "podman --cgroup-manager=cgroupfs"
 }

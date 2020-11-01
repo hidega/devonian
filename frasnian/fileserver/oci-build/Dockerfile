@@ -1,4 +1,4 @@
-# generated on 2020-10-29T16:36:05.366Z
+# generated on 2020-11-01T12:42:12.883Z
 
 FROM devonian/nodebase:1 
 
@@ -12,7 +12,4 @@ RUN  chown -cR middleware /opt/prg/service && \
 
 CMD su -s /bin/bash -c "/opt/prg/service/start.sh" middleware && echo $? > ./start_result
 
-EXPOSE 1
-EXPOSE 2
-EXPOSE 3
 
