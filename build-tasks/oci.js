@@ -86,13 +86,14 @@ module.exports = (params, callback) => fs.readJson(params.args[0] || path.resolv
       nodeBin: '/opt/prg/nodejs/bin/node',
       serviceExecutable: 'lib/index.js',
       expose: [],
-      serviceUser: 'middleware', 
+      serviceUser: 'middleware',
       destDir: 'oci-build',
+      resourcesDir: false,
       ociCmd: 'podman'
     }, cfg)
     var resolvePkgPath = p => p.startsWith('/') ? p : path.resolve(params.cwd, p) 
     cfg.destDir = resolvePkgPath(cfg.destDir)
-    cfg.serviceExecutable = resolvePkgPath(cfg.serviceExecutable) 
+    cfg.serviceExecutable = resolvePkgPath(cfg.serviceExecutable)
     processFiles(cfg, callback)
   })
   .catch(e => callback(e || 1)) 

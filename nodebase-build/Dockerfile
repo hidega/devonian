@@ -1,4 +1,4 @@
-FROM docker.io/fedora:latest
+FROM fedora:latest
 
 COPY opt /opt
 

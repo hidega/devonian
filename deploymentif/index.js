@@ -3,6 +3,7 @@
 module.exports = Object.freeze({
   SECRET_ENV: 'DEVONIAN_SECRET',
   SERVICE_HOME: '/opt/prg/service',
+  SERVICE_RESOURCES_DIR: 'resources',
   CONFIG_FILE: 'cfg.json',
   START_ARG: 'start',
   START_FUNCTION: 'start',

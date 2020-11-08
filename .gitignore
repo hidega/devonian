@@ -6,6 +6,7 @@ local.json
 **.tar.gz
 dirsum.txt
 **.tmp
+**.rpm
 last_healthcheck
 lib/
 oci-build/
