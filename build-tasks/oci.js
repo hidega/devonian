@@ -52,16 +52,12 @@ ${cfg.ociCmd} run -it --ip=${ipFromRange(deploymentIf.NETWORK_IP)}.11 --network=
 echo result: $?
 `
 
-var getServiceHome = () => {
-  if(!deploymentIf.SERVICE_HOME.startsWith('/opt/')) {
-    throw new Error('service home is expected to be in /opt')
-  }
-  return deploymentIf.SERVICE_HOME.substr(1)
-}
+var getServiceHome = () => deploymentIf.SERVICE_HOME.substr(1)
 
 var processFiles = (cfg, callback) => {
   var resolveByDest = d => path.resolve(cfg.destDir, d)
   var buildServiceHome = resolveByDest(getServiceHome()) 
+  var resourcesDir = path.resolve(buildServiceHome, deploymentIf.SERVICE_RESOURCES_DIR)
   return fs.remove(cfg.destDir)
     .then(() => fs.ensureDir(cfg.destDir))
     .then(() => fs.ensureDir(buildServiceHome))
@@ -73,6 +69,7 @@ var processFiles = (cfg, callback) => {
     .then(() => fs.chmod(resolveByDest('dist.sh'), 0o755))
     .then(() => fs.writeFile(resolveByDest('run.sh'), run(cfg)))
     .then(() => fs.chmod(resolveByDest('run.sh'), 0o755))
+    .then(() => cfg.resourcesDir && fs.ensureDir(resourcesDir).then(() => fs.copy(path.resolve(cfg.resourcesDir), resourcesDir)))
     .catch(e => callback(e || 2))
 }
 
