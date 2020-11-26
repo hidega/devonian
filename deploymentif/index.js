@@ -1,6 +1,8 @@
 'use strict'
 
-module.exports = Object.freeze({
+var createLauncher = require('./create-launcher')
+
+var Constants = {
   SECRET_FIELD: 'secret',
   SECRET_FILE: 'secret',
   SERVICE_HOME: '/opt/prg/service',
@@ -15,4 +17,11 @@ module.exports = Object.freeze({
   HEALTHCHECK_CMD: 'healthcheck.sh',
   NETWORK_IP: '192.168.33.0/24',
   NETWORK_NAME: 'devoniannet'
-})
+}
+
+module.exports = Object.freeze(Object.assign(Constants, { 
+  support: {
+    launcher: createLauncher(Constants) 
+  }
+}))
+
