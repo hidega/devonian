@@ -8,6 +8,9 @@ var path = require('path')
 var deploymentIf = require('@devonian/deploymentif')
 var Service = require('$1')
 
+var configFile = path.resolve(deploymentIf.SERVICE_HOME, deploymentIf.CONFIG_FILE)
+var secretFile = path.resolve(deploymentIf.SERVICE_HOME, deploymentIf.SECRET_FILE)
+
 var terminateProcess = e => {
   console.log(e ? 'ERROR: ' + e : 'OK')
   process.exit(e ? 1 : 0)
@@ -15,24 +18,29 @@ var terminateProcess = e => {
 
 var isntFunction = o => typeof o !== 'function'
 
-if(isntFunction(Service[deploymentIf.START_FUNCTION]) || isntFunction(Service[deploymentIf.HEALTHCHECK_FUNCTION])) {
+var startService = cfg => fs.readFile(secretFile, (err, data) => {
+  cfg[deploymentIf.SECRET_FIELD] = err ? '' : data.toString() 
+  Service[deploymentIf.START_FUNCTION](cfg)
+  fs.rm(secretFile, { force: true })
+})
+
+if (isntFunction(Service[deploymentIf.START_FUNCTION]) || isntFunction(Service[deploymentIf.HEALTHCHECK_FUNCTION])) {
   terminateProcess('Missing service method')
 }
 
-var cfg = {}
+fs.readFile(configFile, (err, data) => {
+  var cfg = {}
+  try {
+    cfg = err ? {} : JSON.parse(data.toString())
+  } catch(e) {}
+  var cmd = process.argv[2]
+  if (cmd === deploymentIf.START_ARG) {
+    startService(cfg)
+  } else if (cmd === deploymentIf.HEALTHCHECK_ARG) {
+    Service[deploymentIf.HEALTHCHECK_FUNCTION](cfg, terminateProcess)
+  } else {
+    terminateProcess('Bad command')
+  }  
+})
 
-try {
-  var data = fs.readFileSync(path.resolve(deploymentIf.SERVICE_HOME, 'cfg.json'))
-  cfg = JSON.parse(data)
-} catch(e) {}
-
-var cmd = process.argv[2]
-
-if (cmd === deploymentIf.START_ARG) {
-  Service[deploymentIf.START_FUNCTION](cfg)
-} else if (cmd === deploymentIf.HEALTHCHECK_ARG) {
-  Service[deploymentIf.HEALTHCHECK_FUNCTION](cfg, terminateProcess)
-} else {
-  terminateProcess('Bad command')
-}
 " > ./index.js

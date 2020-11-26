@@ -1,7 +1,8 @@
 'use strict'
 
 module.exports = Object.freeze({
-  SECRET_ENV: 'DEVONIAN_SECRET',
+  SECRET_FIELD: 'secret',
+  SECRET_FILE: 'secret',
   SERVICE_HOME: '/opt/prg/service',
   SERVICE_RESOURCES_DIR: 'resources',
   CONFIG_FILE: 'cfg.json',
