@@ -6,5 +6,6 @@ RUN dnf install -y git gcc-c++ fedora-packager rpmdevtools make ncurses-devel py
     cd /opt/build && \
     git clone https://github.com/nodejs/node.git && \
     cd node && git checkout v14.x && \
-    echo "Version $(git branch --show-current)    Built on $(date)" > /opt/prg/nodejs/BUILD_INFO 
+    echo "devonian-nodebase -- Fedora version: $(cat /etc/fedora-release) -- NodeJS version: $(git branch --show-current) -- Built on: $(date)" > /opt/prg/nodejs/BUILD_INFO && \
+    cp /opt/prg/nodejs/BUILD_INFO /opt/IMAGE_INFO
 
