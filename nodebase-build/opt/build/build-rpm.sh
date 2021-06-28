@@ -25,7 +25,7 @@ mkdir -p %{buildroot}$NODEJS_DIR
 cp -R $NODEJS_DIR/* %{buildroot}$NODEJS_DIR
 cp /opt/IMAGE_INFO %{buildroot}/opt/IMAGE_INFO
 " > ./project.spec && \
-echo $(cat /opt/IMAGE_INFO) > $PACKAGE_NAME.txt && \
+echo $(cat /opt/IMAGE_INFO) > $PACKAGE_NAME.json && \
 rm -rf $NODEJS_DIR/include && \
 rm -rf $NODEJS_DIR/share/man && \
 rm -rf $NODEJS_DIR/share/doc && \

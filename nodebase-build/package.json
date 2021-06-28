@@ -7,7 +7,6 @@
   "files": [
     "build.sh",
     "run.sh",
-    "README",
     "Dockerfile",
     "opt/**"
   ]

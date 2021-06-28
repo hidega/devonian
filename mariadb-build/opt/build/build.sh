@@ -7,5 +7,6 @@ cmake -DCMAKE_INSTALL_PREFIX=/opt/prg/mariadb \
   -DWITHOUT_ARCHIVE:bool=1 -DWITHOUT_CSV:bool=1 -DWITHOUT_OQGRAPH:bool=1 -DWITHOUT_ROCKSDB:bool=1 \
   -DWITHOUT_SPHINX:bool=1 \
   ../server && \
-make -j4 && make install -j4
+make -j4 && make install -j4 && \
+/opt/build/build-rpm.sh
 
