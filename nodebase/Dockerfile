@@ -1,4 +1,4 @@
-FROM fedora:latest
+FROM fedora:34
 
 ARG MIDDLEWARE_UID
 
