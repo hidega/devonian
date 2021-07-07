@@ -1,0 +1,82 @@
+{
+  "id": "someDeploymentPlanId",
+  "description": "Short description of this deployment plan",
+  "virtualServerNode": {
+    "docker": {
+
+    }
+  },
+  "hostContainer": {
+    "network": {
+      "ipRange": "192.168.33.0/24",
+      "name": "hostnet"
+    },
+    "exposedPorts": [
+      {
+        "internal": 8443,
+        "exposed": 8443
+      }
+    ],
+    "hostMaintenance": {
+      "syslogCleanupIntervalHours": 4,
+      "containerLogCleanupIntervalHours": 8,
+      "healthcheckIntervalSec": 60,
+      "healthcheckFailureEmail": {
+        "smtpServer": "1.2.3.4",
+        "smtpServerPort": "564",
+        "smtpServerUserName": {
+          "secretKey": "mailUser"
+        },
+        "smtpServerPassword": {
+          "secretKey": "mailPwd"
+        }, 
+        "emailAddress": "a.b@c.org"
+      }
+    }
+  },
+  "serviceContainers": {
+    "imageLocations": [
+      "scp://readonly@some-uri.com:5678/path/frasnian-fileserver_15675.tar.gz"
+    ],
+    "restContainers": [
+      {
+        "imageName": "some-proxy-66776876865754:1",
+        "refName": "proxy",
+        "publish": {
+          "onHost": 8443,
+          "onContainer": 18443
+        },
+        "hostname": "proxy",
+        "hosts": [ 
+          { 
+            "name": "some-remote-host", 
+            "ip": "1.2.3.4" 
+          }, { 
+            "name": "anotherhost", 
+            "ip": "1.2.3.5" 
+          }
+        ],
+        "healthInterval": "30s",
+        "healthRetries": 2,
+        "healthStartPeriod": "60s",
+        "healthTimeout": "20s",
+        "memory": "200m",
+        "cpus": 0.5
+      }, {
+        "refName": "fileserver",
+        "imageName": "imgfileserver",
+        "volumeContainerName": "fileservervolume"
+      }, {
+        "refName": "configserver",
+        "imageName": "imgconfigserver"
+      }
+    ],
+    "volumeContainers": [
+      {
+        "name": "fileservervolume",
+        "baseImage": "busybox",
+        "forceDelete": false
+      }
+    ]
+  }
+}

@@ -1,27 +1,18 @@
-'use strict'
-
-var createLauncher = require('./create-launcher')
+import support from './support'
 
 var Constants = {
-  SECRET_FIELD: 'secret',
-  SECRET_FILE: 'secret',
+  HOST_CONTAINER_NAME: 'devonianhost',
+  MOUNTED_VOLUME_ROOT: '/opt/mounted-volume',
   SERVICE_HOME: '/opt/prg/service',
-  SERVICE_RESOURCES_DIR: 'resources',
-  CONFIG_FILE: 'cfg.json',
-  START_ARG: 'start',
-  START_FUNCTION: 'start',
-  HEALTHCHECK_FUNCTION: 'ping',
-  HEALTHCHECK_ARG: 'healthcheck',
+  SECRET_FILE: '/opt/secret.json',
+  SERVICE_EXECUTABLE: 'main.js',
   STOP_SIGNAL: 'SIGTERM',
-  START_CMD: 'start.sh',
-  HEALTHCHECK_CMD: 'healthcheck.sh',
-  NETWORK_IP: '192.168.33.0/24',
-  NETWORK_NAME: 'devoniannet'
+  START_SCRIPT: 'start.sh',
+  STOP_SCRIPT: 'stop.sh',
+  HEALTHCHECK_SCRIPT: 'healthcheck.sh',
+  START_CMD: 'start',
+  STOP_CMD: 'stop',
+  HEALTHCHECK_CMD: 'healthcheck'
 }
 
-module.exports = Object.freeze(Object.assign(Constants, { 
-  support: {
-    launcher: createLauncher(Constants) 
-  }
-}))
-
+export default Object.freeze(Object.assign(Constants, { support }))

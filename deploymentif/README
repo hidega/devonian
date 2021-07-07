@@ -1,0 +1,98 @@
+
+
+
+
+
+I.  S Y S T E M   C O M P O N E N T S
+-------------------------------------
+
+
+* Volume containers
+
+Volume containers contain static data such as single MariaDB databases, MongoDB replica data or flat
+files.  A data directory is mounted from the system that runs the volume container.  The size of a
+volume container may not exceed 200 GB, however it also depends on the contract with the Virtual
+Server Provider.  Volume containers are initialized as busybox  based podman images.
+
+Volume containers are scheduled to update approximately every six months.  Updating means dropping the
+busybox  container then creating a new one with the latest image.  The persistent data should not be
+damaged.  The update is a part of a complete system redeployment.
+
+
+* Service containers
+
+Service containers are stateless and do not store persistent data, only static data.  They are
+Fedora based containers and typically offer database or HTTP services.  Persistent data on service
+containers are provided by mounted Volume containers.  Service and Volume containers commonly are
+referred as REST containers.
+
+Any of them can be replaced by another version of the container, anytime.  However, service
+containers are replaced only in case of provisinal measures such as hotfixes.  Normally they are
+updated when the entire system is redeployed.
+
+
+* Host container
+
+The Host container is a Fedora based container based on a special image.  It has a specific constant
+name.  The REST containers are deployed inside the Host container.  Volume containers mount their
+dedicated data directories from the host container's file system.  These directories are mapped from
+the system that runs the host container.  The Host itself container is stateless.
+
+During update, the host and the REST containers are dropped then recreated.
+
+
+* Virtual server node (VSN)
+
+The host container is deployed on the virtual server node. Container manager on the VSN can be
+docker or podman.  Healthcheck and maintenance on the host container are performed by cron jobs.
+When healthcheck fails, an email can be sent with mutt.  Data is mounted to the host container from
+the VSN. Every Volume container has a dedicated data directory an the VSN.
+
+The VSN must be able to update its OS without data loss.  Linuxes are to be updated every six
+months. A complete data migration can be performed by transferring the data files to another VSN.
+
+
+
+
+
+II.  D E P L O Y M E N T   P L A N
+----------------------------------
+
+
+The deployment plan specifies the procedure of the disposal and recreation of the Host and REST
+containers.  It is a JSON file accompanied by an optional secret file which contains key/value pairs
+in JSON. The deployment plan is executed on the Virtual server node.  During the deployment plan
+execution, existing data directories are not altered, but nonexistent directories are created.
+
+The deployment plan execution consists of the following steps:
+
+(1) Validate the deployment plan and the VSN system. 
+
+    Check Bash commands; check Podman or Docker; check being root.  Perform JSON schema based and
+    special validations on the deployment plan JSON file.  Validate secret file if any.  In case of
+    any validation error, the deployment terminates with an error.
+
+(2) Stop then drop Host and REST containers.
+
+    Allocate the Host container by the well-known name.  If it is running then terminate with an
+    error.  Otherwise, stop and drop all containers then drop all images.
+
+(3) Setup VSN for the Host container
+    
+    Setup network for the Host container ???? kell ez ?? mi ez ????
+    If any error occurs, the deployment resets the VSN to a containerless state and terminates with an error.
+
+
+(3) Create and start the Host container.
+
+    Retrieve the host container image, terminate with an error if the image is unavailable.  
+
+
+(4) Create and start the REST containers, possibly mounting existing data.
+
+
+(5) Finalize deployment.
+
+
+In case of deployment errors, the system is rolled back to a containerless state, while all 
+persistent data is preserved. 
