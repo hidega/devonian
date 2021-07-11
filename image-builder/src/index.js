@@ -17,14 +17,19 @@ var createBuildScript = options => `#!/bin/bash
   `
   podman ${options.podmanOpts} image rm -f ${options.imageName}
   podman ${options.podmanOpts} build -t ${options.imageName} ${options.buildDir}
+  rm -f ${options.targetPath}
   podman ${options.podmanOpts} save -o ${options.targetPath} ${options.imageName} `
 
-var build = (opts, options = parseOptions(opts)) => commons.rmDir(options.buildDir)
-  .then(() => commons.createDir(options.buildDir))
-  .then(() => commons.writeFile(commons.resolvePath(options.buildDir, 'Dockerfile'), createDockerfile(options)))
-  .then(() => commons.writeFile(commons.resolvePath(options.buildDir, 'build.sh'), createBuildScript(options)))
-  .then(() => commons.execCmd('bash', [commons.resolvePath(options.buildDir, 'build.sh'), '>', commons.resolvePath(options.buildDir, 'build.out')]))
-  //.finally(() => commons.rmDir(options.buildDir))
+var build = opts => {
+  var options = parseOptions(opts)
+  var resolveInBuildDir = path => commons.resolvePath(options.buildDir, path)
+  return commons.rmDir(options.buildDir)
+    .then(() => commons.createDir(options.buildDir))
+    .then(() => commons.writeFile(resolveInBuildDir('Dockerfile'), createDockerfile(options)))
+    .then(() => commons.writeFile(resolveInBuildDir('build.sh'), createBuildScript(options)))
+    .then(() => commons.execCmd('bash', [resolveInBuildDir('build.sh'), '>', resolveInBuildDir('build.out')]))
+    .finally(() => commons.rmDir(options.buildDir))
+  }
 
 module.exports = { build }
 
