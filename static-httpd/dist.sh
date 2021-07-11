@@ -2,7 +2,7 @@
 
 . ../commons.sh
 
-$OCI save devonian/nodebase:1 | gzip > ./devonian-nodebase_1.tar.gz
+$OCI save devonian/static-httpd:1 | gzip > ./devonian-static-httpd_1.tar.gz
 
 echo result: $?
 

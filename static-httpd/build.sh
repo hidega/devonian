@@ -1,10 +1,10 @@
 #!/bin/bash
 
-. ../commons.sh
+. ./node_modules/bash-constants/constants.sh
 
-$OCI image rm -f devonian/nodebase:1
+$OCI image rm -f devonian/static-httpd:1
 
-$OCI build --build-arg MIDDLEWARE_UID=$MIDDLEWARE_UID -t devonian/nodebase:1 .
+$OCI build -t devonian/static-httpd:1 .
 
 echo result $?
 

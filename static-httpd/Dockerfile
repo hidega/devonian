@@ -2,9 +2,8 @@ FROM busybox:1.33.1
 
 COPY opt /opt
 
-RUN useradd middleware --shell /sbin/nologin && \
-    chown -cfR middleware /opt/data > /dev/null 2>&1 && \
-    chown -cfR middleware /opt/prg > /dev/null 2>&1 && \
-    dnf clean all
-
+RUN /bin/busybox adduser service -D -s /bin/sh && \
+    /bin/busybox chown -cfR service /opt/data > /dev/null 2>&1 && \
+    /bin/busybox chown -cfR service /opt/prg > /dev/null 2>&1 && \
+    /bin/busybox chmod -cfR 755 /opt/prg/service/
 

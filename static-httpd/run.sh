@@ -1,9 +1,11 @@
 #!/bin/bash
 
-. ../commons.sh
+. ./node_modules/bash-constants/constants.sh
 
-$OCI run -it --rm devonian/nodebase:1 bash
+$OCI run -d --name=static-httpd \
+            --health-cmd=/opt/prg/service/healthcheck.sh \
+            --health-timeout=10s 
+     devonian/static-httpd:1 /opt/prg/service/start.sh
 
 echo result: $?
-
 

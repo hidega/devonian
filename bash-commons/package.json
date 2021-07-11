@@ -1,0 +1,10 @@
+{
+  "name": "@devonian/bash-commons",
+  "version": "1.1.1",
+  "description": "Common bash helper functions",
+  "private": true,
+  "license": "Apache-2.0",
+  "files": [
+    "**.sh"
+  ]
+}
