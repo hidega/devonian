@@ -4,15 +4,7 @@
   "description": "Simple static web server image builder",
   "private": true,
   "license": "Apache-2.0",
-  "dependencies": {
-    "bash-constants": "../bash-constants"
-  },
   "files": [
-    "build.sh",
-    "run.sh",
-    "dist.sh",
-    "Dockerfile",
-    "opt/**",
-    "test/**"
+    "index.js"
   ]
 }

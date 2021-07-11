@@ -1,6 +1,6 @@
 #!/bin/bash
 
-. ./node_modules/bash-constants/constants.sh
+. ./constants.sh
 
 $OCI image rm -f devonian/static-httpd:1
 

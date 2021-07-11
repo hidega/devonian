@@ -1,6 +1,6 @@
 #!/bin/bash
 
-. ./node_modules/bash-constants/constants.sh
+. ./constants.sh
 
 $OCI run -d --name=static-httpd \
             --health-cmd=/opt/prg/service/healthcheck.sh \
