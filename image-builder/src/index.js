@@ -10,11 +10,11 @@ RUN ${options.runScript}
 `
 
 var createBuildScript = options => `#!/bin/bash
-  mkdir ${options.buildDir}/opt ${options.buildDir}/opt/prg ${options.buildDir}/opt/data ${options.buildDir}/opt/prg/service
-  cp -r ${options.serviceDir}/* ${options.buildDir}/opt/prg/service
-  ` +
-  (options.dataDir ? `cp -r ${options.dataDir}/* ${options.buildDir}/opt/data` : '')  +
-  `
+  mkdir -p ${options.buildDir}/opt\n` +
+  (options.optSrcDir ? `cp -r ${options.optSrcDir}/* ${options.buildDir}/opt` : '') + `
+  mkdir -p ${options.buildDir}/opt/data ${options.buildDir}/opt/prg/service\n` +
+  (options.serviceDir ? `cp -r ${options.serviceDir}/* ${options.buildDir}/opt/prg/service\n` : '') +
+  (options.dataDir ? `cp -r ${options.dataDir}/* ${options.buildDir}/opt/data` : '')  + `
   podman ${options.podmanOpts} image rm -f ${options.imageName}
   podman ${options.podmanOpts} build -t ${options.imageName} ${options.buildDir}
   rm -f ${options.targetPath}
@@ -28,8 +28,7 @@ var build = opts => {
     .then(() => commons.writeFile(resolveInBuildDir('Dockerfile'), createDockerfile(options)))
     .then(() => commons.writeFile(resolveInBuildDir('build.sh'), createBuildScript(options)))
     .then(() => commons.execCmd('bash', [resolveInBuildDir('build.sh'), '>', resolveInBuildDir('build.out')]))
-    .finally(() => commons.rmDir(options.buildDir))
+    .finally(() => options.keepTmpData ? Promise.resolve() : commons.rmDir(options.buildDir).catch(console.error))
   }
 
 module.exports = { build }
-

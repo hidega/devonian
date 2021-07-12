@@ -7,9 +7,9 @@ module.exports = opts => {
   options.runScript || commons.throwError('missing run script')
   options.baseImage || commons.throwError('missing base image name')
   options.dataDir && (options.dataDir = commons.resolvePath(options.dataDir))
-  options.serviceDir || commons.throwError('missing service dir')
-  options.serviceDir = commons.resolvePath(options.serviceDir)
-  options.targetPath || './image'
+  options.optSrcDir && (options.optSrcDir = commons.resolvePath(options.optSrcDir))
+  options.serviceDir && (options.serviceDir = commons.resolvePath(options.serviceDir))
+  options.targetPath = options.targetPath ? commons.resolvePath(options.targetPath) : commons.resolvePath(commons.tmpDir, 'image')
   options.buildDir = commons.resolvePath(commons.tmpDir, 'cb_' + parseInt(Math.random()*1000000) + '_' + Date.now())
   return options
 }

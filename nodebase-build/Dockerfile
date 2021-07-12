@@ -14,6 +14,6 @@ RUN NODEJS_DIR=/opt/prg/nodejs && \
     rm -rf $NODEJS_DIR/share/man && \
     rm -rf $NODEJS_DIR/share/doc && \
     strip $NODEJS_DIR/bin/node && \
-    echo "{\"name\":\"devonian/nodebase-build\",\"alpineVersion\":\"$(cat /etc/alpine-release)\",\"nodeJsVersion\": \"$(git branch --show-current)\",\"buildDate\":\"$(date -u)\"}" > $NODEJS_DIR/PKG_INFO && \
+    echo "{\"name\":\"devonian/nodebase-build\",\"alpineVersion\":\"$(cat /etc/alpine-release)\",\"nodeJsVersion\":\"$(git branch --show-current)\",\"buildDate\":\"$(date -uIseconds)\"}" > $NODEJS_DIR/PKG_INFO && \
     tar -cvzf /opt/build/nodejs.tar.gz $NODEJS_DIR/
 

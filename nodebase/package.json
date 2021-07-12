@@ -1,13 +1,17 @@
 {
   "name": "@devonian/nodebase",
-  "version": "1.0.1",
+  "version": "1.1.1",
   "description": "Base NodeJs image",
   "private": true,
   "license": "Apache-2.0",
+  "devDependencies": {
+    "@devonian/image-builder": "../image-builder",
+    "@permian/build-tasks": "../../permian/build-tasks"
+  },
+  "scripts": {
+    "tr": "node ./node_modules/@permian/build-tasks"
+  },
   "files": [
-    "build.sh",
-    "run.sh",
-    "dist.sh",
-    "Dockerfile"
+    "tasks.js"
   ]
 }
