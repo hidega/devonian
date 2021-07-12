@@ -1,10 +1,19 @@
-FROM fedora:34
+FROM alpine:3.14
 
 COPY opt /opt
 
-RUN dnf install -y git gcc-c++ fedora-packager rpmdevtools make ncurses-devel python gnutls-devel bison diffutils findutils binutils openssl-devel libcurl-devel && \
+RUN NODEJS_DIR=/opt/prg/nodejs && \
+    apk add git g++ make python3 openssl openssl-dev linux-headers && \
+    mkdir -p /opt/build && mkdir -p $NODEJS_DIR && \
     cd /opt/build && \
-    git clone https://github.com/nodejs/node.git && \
-    cd node && git checkout v14.x && \
-    echo "{ \"package\":\"@devonian/nodebase-build\", \"fedoraVersion\": \"$(cat /etc/fedora-release)\", \"nodeJsVersion\": \"$(git branch --show-current)\", \"buildDate\": \"$(date -u)\" }" > /opt/prg/nodejs/BUILD_INFO && \
-    cp /opt/prg/nodejs/BUILD_INFO /opt/IMAGE_INFO
+    git clone https://github.com/nodejs/node.git && git checkout v16.x && \
+    cd /opt/build/node && \
+    ./configure --shared-openssl --prefix=$NODEJS_DIR && \
+    make -j4 && make install && \
+    rm -rf $NODEJS_DIR/include && \
+    rm -rf $NODEJS_DIR/share/man && \
+    rm -rf $NODEJS_DIR/share/doc && \
+    strip $NODEJS_DIR/bin/node && \
+    echo "{\"name\":\"devonian/nodebase-build\",\"alpineVersion\":\"$(cat /etc/alpine-release)\",\"nodeJsVersion\": \"$(git branch --show-current)\",\"buildDate\":\"$(date -u)\"}" > $NODEJS_DIR/PKG_INFO && \
+    tar -cvzf /opt/build/nodejs.tar.gz $NODEJS_DIR/
+
