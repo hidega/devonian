@@ -22,6 +22,8 @@ rm -rf $MARIADB_DIR/etc
 mkdir $MARIADB_DIR/cert 
 mkdir $MARIADB_DIR/etc 
 cp $MARIADB_DIR/scripts/mariadb-install-db $MARIADB_DIR/bin
+cd /opt/build/server
 echo "{ \"name\":\"devonian-mariadb\", \"buildParametersHash\":\"$(md5sum /opt/build/build.sh)\", \"mariaDbVersion\":\"$(git branch --show-current)\", \"buildDate\":\"$(date -uIseconds)\", \"alpineVersion\":\"$(cat /etc/alpine-release)\" }" > /opt/prg/mariadb/PKG_INFO   
+cd /opt/build
 tar -czf /opt/build/alpine-mariadb.tar.gz $MARIADB_DIR/
 
