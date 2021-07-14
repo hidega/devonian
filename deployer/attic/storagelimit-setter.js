@@ -2,7 +2,7 @@
 
 var commons = require('./commons')
 
-function StorageLimitSetter(revert, deploymentPlan) {
+function StorageLimitSetter(previousStep) {
   var originalCfg
 
   var defaultDeploymentPlan = {
@@ -11,26 +11,22 @@ function StorageLimitSetter(revert, deploymentPlan) {
     }
   }
 
-  this.deploymentPlan = Object.freeze(commons.assignRecursive(defaultDeploymentPlan, deploymentPlan))
+  this.deploymentPlan = commons.assignRecursive(defaultDeploymentPlan, previousStep.deploymentPlan)
 
-  this.apply = () => {
-    var result = this
-    if (this.deploymentPlan.storageLimit.limit) {
-      result = commons.fs.readFile(this.deploymentPlan.storageLimit.cfgFile)
-        .then(buf => {
-          originalCfg = buf.toString()
-          var cfg = buf.toString().split('\n').reduce((acc, l) => l.trim().startsWith('size') ? acc : acc + l + '\n', '')
-          cfg += 'size="' + this.deploymentPlan.storageLimit.limit + '"'
-          return commons.fs.writeFile(this.deploymentPlan.storageLimit.cfgFile, cfg)
-        })
-        .then(() => this)
-    }
-    return result
-  }
+  this.apply = () => commons.when(this.deploymentPlan.storageLimit.limit)
+    .then(commons.fs.readFile(this.deploymentPlan.storageLimit.cfgFile)
+      .then(buf => {
+        originalCfg = buf.toString()
+        var cfg = buf.toString().split('\n').reduce((acc, l) => l.trim().startsWith('size') ? acc : acc + l + '\n', '')
+        cfg += 'size="' + this.deploymentPlan.storageLimit.limit + '"'
+        return commons.fs.writeFile(this.deploymentPlan.storageLimit.cfgFile, cfg)
+      })
+      .then(() => this))
+    .otherwise(this)
 
   this.revert = err => commons.when(this.deploymentPlan.storageLimit.limit)
-    .then(() => commons.fs.writeFile(this.deploymentPlan.storageLimit.cfgFile, originalCfg).then(() => revert(err)))
-    .otherwise(() => revert(err))
+    .then(() => commons.fs.writeFile(this.deploymentPlan.storageLimit.cfgFile, originalCfg).then(() => previousStep.revert(err)))
+    .otherwise(() => previousStep.revert(err))
 }
 
-module.exports = StorageLimitSetter
+module.exports = previousStep => new StorageLimitSetter(previousStep)

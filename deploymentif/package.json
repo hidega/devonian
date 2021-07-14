@@ -1,10 +1,11 @@
 {
   "name": "@devonian/deploymentif",
-  "version": "1.0.1",
+  "version": "1.1.1",
   "description": "Container deployment contract",
   "private": true,
   "license": "Apache-2.0",
   "files": [
-    "index.js"
+    "index.js",
+    "support.js"
   ]
 }

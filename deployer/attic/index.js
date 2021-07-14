@@ -2,36 +2,38 @@
 
 var commons = require('./commons')
 var checkSystem = require('./check-system')
-var StorageLimitSetter = require('./storagelimit-setter')
-var NetworkCreator = require('./network-creator')
-var ContainerDeployer = require('./container-deployer')
-var ContainerManager = require('./container-manager')
+var imageInstaller = require('./image-installer')
+var checkParameters = require('./check-parameters')
+var storageLimitSetter = require('./storagelimit-setter')
+var volumeContainerCreator = require('./volume-container-creator')
+var serviceContainerCreator = require('./service-container-creator')
+var healthcheckSetup = require('./healthcheck-setup')
+var maintenanceSetup = require('./maintenance-setup')
+var networkCreator = require('./network-creator')
+var imageProvider = require('./image-provider')
 var planProvider = require('./plan-provider')
-var Finalizer = require('./finalizer')
-var ImageLoader = require('./image-loader')
+var finalizer = require('./finalizer')
 
-var deploymentPlanFile = process.argv[2] || './deployment-plan.json'
-
-var makeStep = (previousStep, Ctr, msg) => {
-  console.log(msg)
-  var step = new Ctr(previousStep.revert, previousStep.deploymentPlan)
-  return step.apply().catch(err => step.revert(err)).catch(err => commons.terminateProcess('Could not revert changes: - ' + err))
-}
-
-module.exports = () => checkSystem()
-  .catch(() => commons.terminateProcess('Unsupported platform'))
-  .then(commands => planProvider(commands, deploymentPlanFile))
-  .catch(err => commons.terminateProcess('Could not prepare deployment plan - ' + err))
-  .then(deploymentPlan => {
-    var zeroStep = {
-      deploymentPlan,
-      revert: err => commons.terminateProcess('An error occured and changes were reverted - ' + err)
-    }
-    return makeStep(zeroStep, ImageLoader, 'Host system was checked\nDeployment plan was found')
+var makeStep = (step, msg) => step.apply()
+  .then(r => {
+    console.log(msg)
+    return r
   })
-  .then(imageLoader => makeStep(imageLoader, StorageLimitSetter, 'Images are loaded'))
-  .then(storageLimitSetter => makeStep(storageLimitSetter, NetworkCreator, 'Storage limit is set')) 
-  .then(networkCreator => makeStep(networkCreator, ContainerDeployer, 'Network is created'))
-  .then(containerDeployer => makeStep(containerDeployer, ContainerManager, 'Containers are deployed'))
-  .then(containerManager => makeStep(containerManager, Finalizer, 'Healthchecks are scheduled'))
+  .catch(err => step.revert(err))
+  .catch(err => commons.terminateProcess('Could not revert changes: - ' + err))
+
+module.exports = () => checkParameters()
+  .catch(() => commons.terminateProcess('Bad parameters'))
+  .then(parameters => planProvider(parameters))
+  .catch(err => commons.terminateProcess('Could not prepare deployment plan - ' + err))
+  .then(deploymentPlan => checkSystem(deploymentPlan))
+  .then(prevStep => makeStep(storageLimitSetter(prevStep), 'Storage limit is set'))
+  .then(prevStep => makeStep(networkCreator(prevStep), 'Network is created'))
+  .then(prevStep => makeStep(imageProvider(prevStep), 'Container images are ready'))
+  .then(prevStep => makeStep(imageInstaller(prevStep), 'Container images are installed'))
+  .then(prevStep => makeStep(volumeContainerCreator(prevStep), 'Volume containers are installed'))
+  .then(prevStep => makeStep(serviceContainerCreator(prevStep), 'Service containers are installed'))
+  .then(prevStep => makeStep(healthcheckSetup(prevStep), 'Healthcheck is scheduled'))
+  .then(prevStep => makeStep(maintenanceSetup(prevStep), 'Maintenance tasks are scheduled'))
+  .then(prevStep => makeStep(finalizer(prevStep), 'Finalizing'))
   .then(() => console.log('Deployment was successful :)'))

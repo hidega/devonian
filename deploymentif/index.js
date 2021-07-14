@@ -1,10 +1,8 @@
-import support from './support'
+var support = module.require('./support')
 
 var Constants = {
-  HOST_CONTAINER_NAME: 'devonianhost',
-  MOUNTED_VOLUME_ROOT: '/opt/mounted-volume',
+  MOUNTED_VOLUME_ROOT: '/opt/data/mounted-volume',
   SERVICE_HOME: '/opt/prg/service',
-  SECRET_FILE: '/opt/secret.json',
   SERVICE_EXECUTABLE: 'main.js',
   STOP_SIGNAL: 'SIGTERM',
   START_SCRIPT: 'start.sh',
@@ -15,4 +13,4 @@ var Constants = {
   HEALTHCHECK_CMD: 'healthcheck'
 }
 
-export default Object.freeze(Object.assign(Constants, { support }))
+module.exports = Object.freeze(Object.assign(Constants, { support }))
