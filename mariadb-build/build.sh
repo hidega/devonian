@@ -2,9 +2,9 @@
 
 . ../commons.sh
 
-$OCI image rm -f hidand/mariadb-build:1
+$OCI image rm -f devonian/mariadb-build:1
 
-$OCI build -t hidand/mariadb-build:1 .
+$OCI build -t devonian/mariadb-build:1 .
 
 echo result $?
 

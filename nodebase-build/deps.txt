@@ -1,0 +1,39 @@
+apk add
+  git 
+  g++
+  make 
+  [m4 ?]
+  [bison ?]
+  python3
+  [openssl-dev (?)] openssl 
+  linux-headers
+
+ncurses-devel
+gnutls-devel
+diffutils 
+findutils 
+openssl-devel 
+libcurl-devel 
+
+https://pkgs.alpinelinux.org/packages
+
+
+NODEJS_DIR=/opt/prg/nodejs && \
+apk add git g++ make python3 openssl linux-headers && \
+mkdir -p /opt/build && mkdir -p $NODEJS_DIR && \
+cd /opt/build && \
+git clone https://github.com/nodejs/node.git && git checkout v16.x && \
+cd /opt/build/node && \
+./configure --shared-openssl --prefix=$NODEJS_DIR && \
+make -j4 && make install && \
+rm -rf $NODEJS_DIR/include && \
+rm -rf $NODEJS_DIR/share/man && \
+rm -rf $NODEJS_DIR/share/doc && \
+strip $NODEJS_DIR/bin/node && \
+tar -cvzf nodejs.tar.gz $NODEJS_DIR/
+
+
+FIGYELEM, KELL MAJD apk add openssl
+
+
+
